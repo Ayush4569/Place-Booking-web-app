@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+textarea {
+  @apply w-full border my-2 py-2 px-3 rounded-lg font-medium;
+}
+button {
+  @apply bg-gray-300;
+}
+button.primary {
+  @apply w-full bg-primary text-white p-2 rounded-lg hover:bg-slate-200 hover:text-black;
+}

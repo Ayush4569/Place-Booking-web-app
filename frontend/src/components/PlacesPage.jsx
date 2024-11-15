@@ -1,13 +1,15 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import Message from "./Message"
+import { useParams } from "react-router-dom";
+import {useMessage} from "../context/Message"
 import BookingWidget from "./BookingWidget";
 import PlacesImages from "./PlacesImages";
 import PlaceAddress from "./PlaceAddress";
 function PlacesPage() {
   const { id } = useParams();
   const [place, setPlace] = useState(null);
-
+  const {message} = useMessage();
   useEffect(() => {
     if (!id) return;
     axios
@@ -18,7 +20,8 @@ function PlacesPage() {
   }, [id]);
 
   return (
-    <div className="mt-4 bg-gray-100 -mx-8 px-8 pt-8">
+    <div className="mt-8 bg-gray-100 -mx-8 px-8 pt-8">
+      <Message className={"right-11 fixed z-10 top-24"} message={message} />
       <h1 className="text-3xl mb-1">{place?.title}</h1>
       <PlaceAddress>{place?.address}</PlaceAddress>
       <PlacesImages place={place} />

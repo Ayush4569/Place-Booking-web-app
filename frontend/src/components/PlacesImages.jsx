@@ -3,7 +3,6 @@ import React,{useState} from 'react'
 function PlacesImages({place}) {
 
     const [showExtraPhotos, setShowExtraPhotos] = useState(false);
-
     if (showExtraPhotos) {
         return (
           <div className="absolute inset-0 bg-black text-white min-h-screen">

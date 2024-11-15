@@ -12,11 +12,12 @@ function UploadPics({ addedPhotos, setAddedPhotos }) {
   }
   async function handleUpload(e) {
     const files = e.target.files; // array
+    console.log("Files :",files);
     const data = new FormData();
     for (let i = 0; i < files.length; i++) {
       data.append("photos", files[i]);
     }
-    console.log(data);
+    console.log("Data : ",data);
     const { data: fileUrls } = await axios.post("/photo/upload", data, {
       headers: { "Content-type": "multipart/form-data" },
     });
@@ -60,7 +61,7 @@ function UploadPics({ addedPhotos, setAddedPhotos }) {
               <div className="h-32 flex relative" key={link}>
                 <img
                   className="rounded-2xl w-full object-cover"
-                  src={`http://localhost:4000/uploads/${link}`}
+                  src={link}
                 />
                 <button
                   onClick={(e) => removePhoto(e, link)}

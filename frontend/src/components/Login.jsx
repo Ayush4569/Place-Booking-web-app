@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useUser } from "../context/UserContext";
-import Message from "./Message";
+
 import { useMessage } from "../context/Message";
 function Login() {
   const [email, setEmail] = useState("");
@@ -37,7 +37,6 @@ function Login() {
   return (
     <div className="grow flex  items-center justify-center mt-5">
       <div className="mb-32">
-      <Message message={message}/>  {/* Displaying message */}
         <h1 className="text-4xl text-center mb-4">Login</h1>
         <form onSubmit={handleLogin} className="mx-auto max-w-md">
           <input

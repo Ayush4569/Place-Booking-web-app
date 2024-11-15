@@ -16,3 +16,18 @@ button {
 button.primary {
   @apply w-full bg-primary text-white p-2 rounded-lg hover:bg-slate-200 hover:text-black;
 }
+
+@keyframes slideIn {
+   0%{
+   transform: translateX(100%);
+   opacity: 0;
+   }
+   100%{
+    transform: translateX(0);
+   opacity: 1;
+   }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.5s ease forwards;
+}

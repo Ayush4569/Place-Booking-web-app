@@ -1,7 +1,9 @@
 import { createContext,useContext,useState } from "react";
 import Loading from "../components/Loading";
 
-const LoadingContext = createContext();
+const LoadingContext = createContext({
+    loading:null
+});
 
 export const LoadingContextProvider = ({children})=>{
     

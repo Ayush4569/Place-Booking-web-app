@@ -7,9 +7,9 @@ import { useLoading } from "../context/Loading";
 import BookingDates from "./BookingDates";
 function MyBookings() {
   const [myBookings, setMyBookings] = useState([]);
-  const { showLoading, hideLoading } = useLoading();
+  const { setLoading } = useLoading();
   useEffect(() => {
-    showLoading()
+    setLoading(true)
     axios
       .get("/trips/my-bookings")
       .then((response) => {
@@ -19,7 +19,7 @@ function MyBookings() {
         console.log(err);
       })
       .finally(() => {
-        hideLoading()
+        setLoading(false)
       });
   }, []);
 

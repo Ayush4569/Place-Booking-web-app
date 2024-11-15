@@ -5,7 +5,7 @@ const route = Router();
 
 route.post("/", async (req, res) => {
   console.log("res-body", req.body);
-  let { totalPrice,bookingId } = req.body;
+  let { totalPrice,bookingDetails } = req.body;
 
   let create_payment_json = {
     "intent": "sale",
@@ -13,7 +13,7 @@ route.post("/", async (req, res) => {
       "payment_method": "paypal",
     },
     "redirect_urls": {
-      "return_url": `http://localhost:4000/payment/success?bookingId=${bookingId}`,
+      "return_url": `http://localhost:4000/payment/success`,
       "cancel_url": "http://localhost:4000/payment/failed",
     },
     "transactions": [
@@ -33,7 +33,7 @@ route.post("/", async (req, res) => {
           "currency": "USD",
           "total": totalPrice.toFixed(2).toString(),
         },
-        "description": "This is the payment description.",
+        "description": "This is the payment description",
       },
     ],
   };
@@ -44,8 +44,7 @@ route.post("/", async (req, res) => {
         return res.status(500).json({ error });
       }
       else {
-        // console.log(payment);
-        await Booking.updateOne({_id:bookingId},{paymentId:payment.id})
+      req.session.tempBooking = {...bookingDetails,user:req.user.id,paymentId:payment.id}
          return res.json(payment);
       }
     });
@@ -56,16 +55,20 @@ route.post("/", async (req, res) => {
 });
 
 route.get("/success",async(req,res)=>{
-  let {PayerID,bookingId,paymentId} = req.query
-  let {price} = await Booking.findById(bookingId)
+  let {PayerID,paymentId} = req.query
   try {
-    console.log(req.query);
+    console.log("Req.Query",req.query);
+    const tempBooking = req.session.tempBooking;
+    console.log("tempBooking: ",tempBooking);
+    if (!tempBooking) {
+      return res.status(400).send("Invalid or expired payment session.");
+    }
     const execute_payment_json = {
       "payer_id": PayerID,
       "transactions": [{
           "amount": {
               "currency": "USD",
-              "total": price.toFixed(2).toString()
+              "total": tempBooking.price.toFixed(2).toString()
           }
       }]
   }
@@ -75,7 +78,7 @@ route.get("/success",async(req,res)=>{
       return res.status(500).json({ error: error.response });
     }
     else{
-      const booking = await Booking.findById(bookingId);
+     const booking = await Booking.create(tempBooking)
       if(payment.transactions[0].amount.total == booking.price.toFixed(2)){
         return res.redirect(`http://localhost:5173/account/bookings`)
       }

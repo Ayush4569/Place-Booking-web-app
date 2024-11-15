@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { differenceInCalendarDays } from "date-fns";
 import axios from "axios";
-import Loading from "./Loading";
 function BookingWidget({ place }) {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(1);
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
-  const [loading,setLoading] = useState("")
   let numberOfNights = 0;
   if (checkIn && checkOut) {
     numberOfNights = differenceInCalendarDays(
@@ -17,40 +15,34 @@ function BookingWidget({ place }) {
     );
   }
   async function bookPlace() {
-    setLoading(true)
-    const res = await axios.post("/trips/bookings", {
-      place: place?._id,
-      checkIn,
-      checkOut,
-      guests,
-      name,
-      mobile,
-      price: numberOfNights * place?.price,
-    });
-     console.log(res);
-    const bookingId = res.data._id;
-    if (res.statusText === "OK") {
-      try {
-        let paymentRes = await axios.post("/payment", {
-          totalPrice: numberOfNights * place?.price,
-          bookingId,
-        });
-        console.log(paymentRes);
-        if (paymentRes.statusText === "OK") {
-          window.location.href = paymentRes.data.links[1].href;
-        }
-      } catch (error) {
-        console.log("Err at payment ");
-      }
+        try {
+          let bookingDetails = {
+            place: place?._id,
+              checkIn,
+              checkOut,
+              guests,
+              name,
+              contact:mobile,
+              price: numberOfNights * place?.price,
+              
+          }
+          let paymentRes = await axios.post("/payment", {
+            totalPrice: numberOfNights * place?.price,
+            bookingDetails
+          });
+          console.log("PaymentRes : ", paymentRes);
+          if (paymentRes.status === 200) {
+            window.location.href = paymentRes.data.links[1].href;
+          } else {
+            console.log("Payment initiation failed. Please try again or contact support.");
+          }
+        } catch (error) {
+          console.error("Error during payment:", error);
+        } finally {
     }
-      setLoading(false)
   }
 
-  if(loading){
-    return <Loading/>
-  }
   return (
-
     <div className="bg-white shadow white p-4 rounded-2xl">
       <div className="text-2xl text-center">
         Price: ${place?.price} / per night
@@ -62,6 +54,7 @@ function BookingWidget({ place }) {
             <input
               type="date"
               value={checkIn}
+              min={new Date().toISOString().split("T")[0]}
               onChange={(e) => setCheckIn(e.target.value)}
             />
           </div>
@@ -70,6 +63,7 @@ function BookingWidget({ place }) {
             <input
               type="date"
               value={checkOut}
+              min={ new Date().toISOString().split("T")[0]}
               onChange={(e) => setCheckOut(e.target.value)}
             />
           </div>
@@ -100,9 +94,12 @@ function BookingWidget({ place }) {
         )}
       </div>
 
-      <button onClick={bookPlace} className="primary mt-1">
-        Book this place
-        {numberOfNights > 0 && <span> ${numberOfNights * place?.price}</span>}
+      <button onClick={bookPlace}  className="primary my-3">
+        {numberOfNights > 0 ? (
+          <span>Total: ${numberOfNights * place?.price}</span>
+        ) : (
+          <span> Total: ${place?.price}</span>
+        )}
       </button>
     </div>
   );

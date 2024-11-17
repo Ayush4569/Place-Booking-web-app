@@ -80,6 +80,7 @@ route.get("/success",async(req,res)=>{
     else{
      const booking = await Booking.create(tempBooking)
       if(payment.transactions[0].amount.total == booking.price.toFixed(2)){
+         
         return res.redirect(`http://localhost:5173/account/bookings`)
       }
       else {

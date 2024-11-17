@@ -1,18 +1,24 @@
 import React, { useState } from "react";
 import { differenceInCalendarDays } from "date-fns";
 import axios from "axios";
+import { useMessage } from "../context/Message";
 function BookingWidget({ place }) {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState(1);
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
+  const {setMessage} = useMessage()
   let numberOfNights = 0;
   if (checkIn && checkOut) {
     numberOfNights = differenceInCalendarDays(
       new Date(checkOut),
       new Date(checkIn)
     );
+  }
+
+  function errorBooking(){
+    setMessage("Please provide every check in details")
   }
   async function bookPlace() {
         try {
@@ -38,8 +44,7 @@ function BookingWidget({ place }) {
           }
         } catch (error) {
           console.error("Error during payment:", error);
-        } finally {
-    }
+        } 
   }
 
   return (
@@ -94,13 +99,23 @@ function BookingWidget({ place }) {
         )}
       </div>
 
-      <button onClick={bookPlace}  className="primary my-3">
+    {numberOfNights > 0 ? (
+         <button onClick={bookPlace}  className="primary my-3">
+           <span>Pay Now: ${numberOfNights * place?.price}</span>
+       </button>
+    ): (
+      <button onClick={errorBooking}  className="primary my-3">
+           <span>Total: ${place?.price}</span>
+       </button>
+    )}
+   
+      {/* <button onClick={bookPlace}  className="primary my-3">
         {numberOfNights > 0 ? (
-          <span>Total: ${numberOfNights * place?.price}</span>
+          <span>Pay Now: ${numberOfNights * place?.price}</span>
         ) : (
           <span> Total: ${place?.price}</span>
         )}
-      </button>
+      </button> */}
     </div>
   );
 }

@@ -68,16 +68,7 @@ function Navbar() {
           <div className="bg-gray-500 text-white rounded-full border border-gray-500 overflow-hidden ">
             {user?.photo ? (
               <div>
-                <img
-                  src={
-                    user.photo.endsWith("default.png")
-                      ? `http://localhost:4000/uploads/${user.photo}`
-                      : user.photo.startsWith("/profile")
-                      ? `http://localhost:4000/uploads/${user.photo}`
-                      : user.photo
-                  }
-                  width={30}
-                />
+                <img src={user.photo} width={30} />
               </div>
             ) : (
               <svg

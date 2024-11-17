@@ -31,18 +31,18 @@ function Index() {
         {places?.length > 0 &&
           places.map((place) => (
             <Link to={`/places/${place._id}`} key={place._id}>
-              <div className="  hover:bg-gray-100 hover:delay-100">
+              <div className=" ml-2 hover:bg-gray-100 hover:delay-100 shadow-lg p-3 rounded-2xl">
                 <div className="bg-gray-500 rounded-2xl flex">
                   {place.photos && (
                     <img
                       className="rounded-2xl object-cover aspect-square"
-                      src={`http://localhost:4000/uploads/${place.photos[0]}`}
+                      src={place.photos[0]}
                     />
                   )}
                 </div>
                 <h3 className="font-bold">{place.address}</h3>
                 <h3 className="text-sm text-gray-500">{place.title}</h3>
-                <div className="mt-2">
+                <div className="">
                   <span className="font-bold">${place.price}</span>
                 </div>
               </div>

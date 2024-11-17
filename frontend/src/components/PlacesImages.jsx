@@ -33,7 +33,7 @@ function PlacesImages({place}) {
               {place?.photos?.length > 0 &&
                 place.photos.map((photos) => (
                   <div className="p-6 flex flex-col justify-center items-center" key={photos}>
-                    <img className="w-[65vw] h-auto object-cover" src={`http://localhost:4000/uploads/${photos}`} />
+                    <img className="w-[65vw] h-auto object-cover" src={photos} />
                   </div>
                 ))}
             </div>
@@ -50,7 +50,7 @@ function PlacesImages({place}) {
                 <img
                   className="w-full sm:h-auto md:h-[72vh] aspect-square object-cover cursor-pointer"
                   onClick={() => setShowExtraPhotos(true)}
-                  src={`http://localhost:4000/uploads/${place.photos[0]}`}
+                  src={place.photos[0]}
                 />
               </div>
             )}
@@ -60,14 +60,14 @@ function PlacesImages({place}) {
               <img
                 className="w-full sm:h-auto md:h-[36vh] aspect-square  object-cover cursor-pointer"
                 onClick={() => setShowExtraPhotos(true)}
-                src={`http://localhost:4000/uploads/${place.photos[1]}`}
+                src={place.photos[1]}
               />
             )}
             <div className="overflow-hidden">
               {place?.photos?.[2] && (
                 <img
                   className="w-full sm:h-auto md:h-[36vh] aspect-square  object-cover relative top-2 cursor-pointer"
-                  src={`http://localhost:4000/uploads/${place.photos[2]}`}
+                  src={place.photos[2]}
                 />
               )}
             </div>

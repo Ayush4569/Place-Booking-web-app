@@ -162,7 +162,7 @@ function PlacesFormPage() {
               />
             </div>
             <div>
-              <h3 className="mt-2 -mb-1">Max number of guest</h3>
+              <h3 className="mt-2 -mb-1">Price per night : </h3>
               <input
                 type="number"
                 value={price}

@@ -11,11 +11,11 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const { message, setMessage } = useMessage();
-  const { showLoading, hideLoading } = useLoading();
+  const { setLoading } = useLoading();
   const navigate = useNavigate();
   async function registerUser(e) {
     e.preventDefault();
-    showLoading()
+    setLoading(true)
     try {
       // parsing to form data inorder to send the image file to the server
       const formData = new FormData();
@@ -34,14 +34,15 @@ function Signup() {
       }
     } catch (error) {
       console.log(error);
+      setMessage(error.response.data.message);
     }
     finally{
-      hideLoading()
+      setLoading(false)
     }
   }
   return (
     <div className="grow flex items-center justify-center mt-5">
-      <Message message={message} /> {/* Displaying message */}
+      <Message className="right-10 w-auto absolute top-28" message={message} /> 
       <div className="mb-32 w-full">
         <h1 className="text-4xl text-center mb-4">Signup</h1>
         <form

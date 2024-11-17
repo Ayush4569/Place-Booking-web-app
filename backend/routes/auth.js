@@ -2,23 +2,15 @@ import { Router } from "express";
 import { User } from "../models/user.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../services/jwt.js";
-import path from "path";
 import passport from "passport";
-import multer from "multer"
+import { multerPhotoUploader } from "../middlewares/multer.js";
+import { uploadOnCloudinary } from "../services/cloudinary.js";
 const route = Router();
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.resolve("./uploads/profile"));
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-const upload = multer({storage})
-route.post("/register", upload.single("profileImage"), async (req, res) => {
+
+route.post("/register", multerPhotoUploader.single("profileImage"), async (req, res) => {
   const { name, email, password } = req.body;
-  console.log(req.body, req.file);
-  if (!name || !email || !password) {
+  // console.log(req.body);
+  if ([name,email,password].some(field=>field.trim()== "")) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -39,13 +31,20 @@ route.post("/register", upload.single("profileImage"), async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    // upload the profile pic (if there) on cloudinary 
+    let profileAvatar;
+    // console.log("reqFile: ",req.file);
+    if(req.file && req.file.path){
+      profileAvatar = req.file.path
+      // console.log("profileAvatar : ",profileAvatar);
+    }
+    const avatarImage = await uploadOnCloudinary(profileAvatar)
     // Create a new user
     await User.create({
       name,
       email,
       password: hashedPassword,
-      profileImageUrl: `/profile/${req.file.filename}`,
+      profileImageUrl: avatarImage.url,
     });
 
     // Send a success response

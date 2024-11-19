@@ -107,7 +107,7 @@ route.get("/user-places", async (req, res) => {
   }
 });
 route.get("/places/:id", async (req, res) => {
-  res.json(await places.findById(req.params.id));
+  res.json(await places.findById(req.params.id).populate("owner"));
 });
 route.put("/places/:id", async (req, res) => {
   let {

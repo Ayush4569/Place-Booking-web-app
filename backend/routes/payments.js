@@ -1,10 +1,12 @@
 import { Router } from "express";
 import { Booking } from "../models/bookings.js";
 import { paypal } from "../services/paypal.js";
+import { io } from "../index.js";
 const route = Router();
 
+
 route.post("/", async (req, res) => {
-  console.log("res-body", req.body);
+  // console.log("res-body", req.body);
   let { totalPrice,bookingDetails } = req.body;
 
   let create_payment_json = {
@@ -78,9 +80,9 @@ route.get("/success",async(req,res)=>{
       return res.status(500).json({ error: error.response });
     }
     else{
-     const booking = await Booking.create(tempBooking)
+      const booking = await Booking.create(tempBooking)
       if(payment.transactions[0].amount.total == booking.price.toFixed(2)){
-         
+        io.emit("payment-success","Payment successfull")
         return res.redirect(`http://localhost:5173/account/bookings`)
       }
       else {

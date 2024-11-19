@@ -1,59 +1,61 @@
 import { Router } from "express";
 import { User } from "../models/user.js";
-import bcrypt from "bcryptjs";
+
 import { generateToken } from "../services/jwt.js";
 import passport from "passport";
 import { multerPhotoUploader } from "../middlewares/multer.js";
 import { uploadOnCloudinary } from "../services/cloudinary.js";
 const route = Router();
 
-route.post("/register", multerPhotoUploader.single("profileImage"), async (req, res) => {
-  const { name, email, password } = req.body;
-  // console.log(req.body);
-  if ([name,email,password].some(field=>field.trim()== "")) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ message: "Invalid email format" });
-  }
-
-  if (password.length < 6) {
-    return res
-      .status(400)
-      .json({ message: "Password must be at least 6 characters long" });
-  }
-
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "User already exists" });
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // upload the profile pic (if there) on cloudinary 
-    let profileAvatar;
-    // console.log("reqFile: ",req.file);
-    if(req.file && req.file.path){
-      profileAvatar = req.file.path
-      // console.log("profileAvatar : ",profileAvatar);
+route.post(
+  "/register",
+  multerPhotoUploader.single("profileImage"),
+  async (req, res) => {
+    const { name, email, password } = req.body;
+    // console.log(req.body);
+    if ([name, email, password].some((field) => field.trim() == "")) {
+      return res.status(400).json({ message: "All fields are required" });
     }
-    const avatarImage = await uploadOnCloudinary(profileAvatar)
-    // Create a new user
-    await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      profileImageUrl: avatarImage.url,
-    });
 
-    // Send a success response
-    res.status(201).json({ message: "User created successfully" });
-  } catch (error) {
-    console.error("Error creating account:", error);
-    res.status(500).json({ message: "Internal server error" });
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    if (password.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters long" });
+    }
+
+    try {
+      const existingUser = await User.findOne({ email });
+      if (existingUser)
+        return res.status(400).json({ message: "User already exists" });
+      // upload the profile pic (if there) on cloudinary
+      let profileAvatar;
+      // console.log("reqFile: ",req.file);
+      if (req.file && req.file.path) {
+        profileAvatar = req.file.path;
+        // console.log("profileAvatar : ",profileAvatar);
+      }
+      const avatarImage = await uploadOnCloudinary(profileAvatar);
+      // Create a new user
+      await User.create({
+        name,
+        email,
+        password,
+        profileImageUrl: avatarImage.url,
+      });
+
+      // Send a success response
+      res.status(201).json({ message: "User created successfully" });
+    } catch (error) {
+      console.error("Error creating account:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
-});
+);
 route.post("/login", async (req, res) => {
   const { email, password } = req.body;
   // console.log(req.body);
@@ -63,7 +65,7 @@ route.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "User not found" });
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await user.isPasswordCorrect(password)
     if (!isValidPassword) {
       return res.status(400).json({ message: "Invalid password" });
     }
@@ -99,9 +101,32 @@ route.post("/logout", (req, res) => {
 });
 route.get("/profile", (req, res) => {
   if (!req.user) return res.status(400).json({ message: "Please login first" });
- else{
-  return res.status(200).json(req.user);
- }
+  else {
+    return res.status(200).json(req.user);
+  }
+});
+route.post("/resetpassword", async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  try {
+    if ([oldPassword, newPassword].some((field) => field.trim() != "" && field != null)) {
+       const user = await User.findById(req?.user?.id)
+       const isPasswordCorrect = user.isPasswordCorrect(oldPassword)
+      if(!isPasswordCorrect){
+        return res.status(400).json({message:"Incorrect Password"})
+      }
+      user.password = newPassword;
+      await user.save();
+      if(!resetPassword){
+        throw Error("Failed to change password try again in some time")
+      }
+      return res.status(200).json({message:"Password changed sucessfully"})
+    }
+    else{
+
+    }
+  } catch (error) {
+    return res.status(500).json({message:error.message})
+  }
 });
 route.get(
   "/google",

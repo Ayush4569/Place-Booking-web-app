@@ -5,7 +5,6 @@ import Layout from "./Layout";
 import Index from "./components/Index";
 import Login from "./components/Login";
 import Signup from "./components/SIgnup";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { UserContextProvider } from "./context/UserContext";
 import ProfilePage from "./components/ProfilePage";
 import Places from "./components/Places";
@@ -15,26 +14,28 @@ import MyBookings from "./components/MyBookings";
 import BookedPage from "./components/BookedPage";
 import { MessageContextProvider } from "./context/Message";
 import { LoadingContextProvider } from "./context/Loading";
+import ResetPassword from "./components/ResetPassword";
+import ChangeAccountDets from "./components/ChangeAccountDets";
+
 function App() {
   axios.defaults.baseURL = "http://localhost:4000";
   axios.defaults.withCredentials = true;
-  const initialOptions = {
-    clientId:
-      "Aeg6PzADshG0v4gKh_BqiEX4mWtVsI0LDdbDRc2-GVPW4V7FHHgRf1HSySBs1z-ELhI8UPeA-SjQD8Ph",
-    intent: "capture",
-    currency:"INR"
-  };
+ 
+
+
+
   return (
-    <PayPalScriptProvider options={initialOptions}>
       <LoadingContextProvider>
         <UserContextProvider>
           <MessageContextProvider>
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<Index />} />
+                <Route path="/account" element={<ProfilePage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Signup />} />
-                <Route path="/account" element={<ProfilePage />} />
+                <Route path="/resetPassword" element={<ResetPassword />} />
+                <Route path="/changeAccountDetails" element={<ChangeAccountDets />} />
                 <Route path="/account/places" element={<Places />} />
                 <Route
                   path="/account/places/new"
@@ -52,7 +53,6 @@ function App() {
           </MessageContextProvider>
         </UserContextProvider>
       </LoadingContextProvider>
-    </PayPalScriptProvider>
   );
 }
 

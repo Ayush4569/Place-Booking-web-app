@@ -31,7 +31,7 @@ function Index() {
         {places?.length > 0 &&
           places.map((place) => (
             <Link to={`/places/${place._id}`} key={place._id}>
-              <div className=" ml-2 hover:bg-gray-100 hover:delay-100 shadow-lg p-3 rounded-2xl">
+              <div className=" ml-2 md:max-h-96 hover:bg-gray-100 hover:delay-100 shadow-xl lg:p-5 p-3 rounded-2xl">
                 <div className="bg-gray-500 rounded-2xl flex">
                   {place.photos && (
                     <img

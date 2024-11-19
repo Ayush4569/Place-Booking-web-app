@@ -10,7 +10,7 @@ export const MessageContextProvider = ({children})=>{
         if (message) {
           const timer = setTimeout(() => {
             setMessage("");
-          }, 1000);
+          }, 2000);
           return () => clearTimeout(timer);
         }
       }, [message]);

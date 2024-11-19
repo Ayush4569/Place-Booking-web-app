@@ -65,10 +65,10 @@ function Navbar() {
               d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
             />
           </svg>
-          <div className="bg-gray-500 text-white rounded-full border border-gray-500 overflow-hidden ">
+          <div className="bg-gray-500 text-white rounded-full border border-gray-500 overflow-hidden">
             {user?.photo ? (
               <div>
-                <img src={user.photo} width={30} />
+                <img src={user.photo} className="h-10 w-10 object-cover" />
               </div>
             ) : (
               <svg

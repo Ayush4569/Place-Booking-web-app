@@ -6,5 +6,19 @@
 //   .then(console.log);
 
 
-let title = ''
-console.log(!title?.trim());
+// let title = ''
+// console.log(!title?.trim());
+
+// import {} from "./services/CountryCodes.json"
+import fs from "node:fs"
+
+fs.readFile("./services/CountryCodes.json",(err,data)=>{
+    if (err) {  
+        console.error('Error reading file:', err);  
+        return;  
+      }  
+    const jsonData = JSON.parse(data);
+    jsonData.forEach((country)=>{
+        console.log(country.dial_code);
+    })
+})

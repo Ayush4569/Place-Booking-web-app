@@ -23,13 +23,13 @@ import {
 
 const app = express();
 const server = createServer(app)
-export const io = new Server(server,{
-  cors:{
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-    credentials: true,
-  }
-})
+// export const io = new Server(server,{
+//   cors:{
+//     origin: "http://localhost:5173",
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   }
+// })
 // console.log(process.env.JWT_SECRET,process.env.CLIENT_ID,process.env.CLIENT_SECRET,process.env.MONGO_URL);
 // using middlewares
 app.use("/uploads", express.static(path.resolve("./uploads")));
@@ -60,12 +60,12 @@ connectDB(String(process.env.MONGO_URL))
   .catch((dbError) => console.log("Error connecting Database:",dbError));
 
 // io connection
-io.on("connection",(socket)=>{
-  console.log(`Socket with socketId ${socket.id} connected`);
-  socket.on("disconnect",()=>{
-    console.log(`socket with ${socket.id} disconnected`);
-  })
-})
+// io.on("connection",(socket)=>{
+//   console.log(`Socket with socketId ${socket.id} connected`);
+//   socket.on("disconnect",()=>{
+//     console.log(`socket with ${socket.id} disconnected`);
+//   })
+// })
 
 // creating apis
 app.get("/", (req, res) => {

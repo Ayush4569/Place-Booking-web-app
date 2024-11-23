@@ -1,18 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback,useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Message from "./Message";
 import { useLoading } from "../context/Loading";
-
+import {countries} from "../utils/CountryCodes.js"
 import { useMessage } from "../context/Message";
 function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [contactNumber, setContactNumber] = useState(null);
   const [profileImage, setProfileImage] = useState("");
+  const [country,setCountry] = useState("India")
+  const [countryCode,setCountryCode] = useState("91")
   const { message, setMessage } = useMessage();
   const { setLoading } = useLoading();
-  const navigate = useNavigate();
+ const navigate = useNavigate()
+   
+   useEffect(() => {
+    const matchingCountry = countries.find((country)=> country.phone == countryCode)
+    console.log("Matching : ",matchingCountry);
+    setCountry(matchingCountry ?  matchingCountry.name : "India")
+   }, [countryCode])
+   
+ 
   async function registerUser(e) {
     e.preventDefault();
     setLoading(true)
@@ -47,7 +58,7 @@ function Signup() {
         <h1 className="text-4xl text-center mb-4">Signup</h1>
         <form
           onSubmit={registerUser}
-          className="mx-auto max-w-md"
+          className="mx-auto max-w-md p-5"
           encType="multipart/form-data"
         >
           <input
@@ -64,11 +75,39 @@ function Signup() {
           />
           <input
             type="password"
-            placeholder="Enter your password"
+            placeholder="Set your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <label className="text-lg">Upload your profile image:</label>
+          <div className="flex items-center gap-2 w-full">
+            <select name="countryCodes" className="border border-gray-500 h-max w-max p-2 rounded-md" value={countryCode} onChange={(e)=>{setCountryCode(e.target.value)}}>
+            {
+              countries.map((country)=> (
+                <option key={country.name}>+{country.phone}</option>
+              ))
+            }
+            </select>
+          <input
+            type="number"
+            placeholder="Enter your contact number"
+            value={contactNumber}
+            onChange={(e) => setContactNumber(e.target.value)}
+          />
+          </div>
+          
+          <div className="flex items-center gap-2 text-nowrap my-3 w-full">
+          <label className="text-md">Select your region:</label>
+          <select name="country" className="border border-gray-500 h-max w-2/3 p-2 rounded-md" value={country} onChange={e=>setCountry(e.target.value)}>
+            {
+              countries.map((country)=> (
+                <option key={country.name}>{country.name}</option>
+              ))
+            }
+            </select>
+          </div>
+       
+
+          <label className="text-lg">Upload a profile Image</label>
           <input
             type="file"
             onChange={(e) => setProfileImage(e.target.files[0])}

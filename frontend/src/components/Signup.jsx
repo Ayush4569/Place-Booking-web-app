@@ -12,7 +12,7 @@ function Signup() {
   const [contactNumber, setContactNumber] = useState(null);
   const [profileImage, setProfileImage] = useState("");
   const [country,setCountry] = useState("India")
-  const [countryCode,setCountryCode] = useState("91")
+  const [countryCode,setCountryCode] = useState("+91")
   const { message, setMessage } = useMessage();
   const { setLoading } = useLoading();
  const navigate = useNavigate()
@@ -34,6 +34,8 @@ function Signup() {
       formData.append("email", email);
       formData.append("password", password);
       formData.append("profileImage", profileImage);
+      formData.append("mobileNumber",contactNumber)
+      formData.append("country",country)
       const response = await axios.post("/auth/register", formData, {
         headers: {
           "Content-Type": "multipart/form-data",

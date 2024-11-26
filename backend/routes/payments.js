@@ -5,6 +5,7 @@ const route = Router();
 
 route.post("/", async (req, res) => {
   // console.log("res-body", req.body);
+  if(!req.user) return res.status(400).json({message:"Login to book this place"})
   let { totalPrice,bookingDetails } = req.body;
 
   let create_payment_json = {

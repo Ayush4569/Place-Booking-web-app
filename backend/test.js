@@ -10,15 +10,25 @@
 // console.log(!title?.trim());
 
 // import {} from "./services/CountryCodes.json"
-import fs from "node:fs"
+// import fs from "node:fs"
 
-fs.readFile("./services/CountryCodes.json",(err,data)=>{
-    if (err) {  
-        console.error('Error reading file:', err);  
-        return;  
-      }  
-    const jsonData = JSON.parse(data);
-    jsonData.forEach((country)=>{
-        console.log(country.dial_code);
-    })
-})
+// fs.readFile("./services/CountryCodes.json",(err,data)=>{
+//     if (err) {  
+//         console.error('Error reading file:', err);  
+//         return;  
+//       }  
+//     const jsonData = JSON.parse(data);
+//     jsonData.forEach((country)=>{
+//         console.log(country.dial_code);
+//     })
+// })
+
+let addedPhotos =  [
+    'http://res.cloudinary.com/dzmb718aw/image/upload/v1732637886/c1pn1r432p5xhevslles.webp',
+    'http://res.cloudinary.com/dzmb718aw/image/upload/v1732637886/xzylhbepv9bzdlnivygw.webp',
+    'http://res.cloudinary.com/dzmb718aw/image/upload/v1732637886/iqmmynpkb7dnyrpblm4v.webp',
+    'http://res.cloudinary.com/dzmb718aw/image/upload/v1732637886/tlqphmlme9bpav3l5ciu.webp'
+  ]
+
+  let editPics = addedPhotos.map((photoUrl) => photoUrl.split("/").pop().split(".")[0]); 
+  console.log(editPics); 

@@ -26,7 +26,7 @@ function Index() {
 
   return (
     <>
-      <Message message={message} className={"right-6 absolute top-20"} />
+      <Message message={message} className={"right-6  absolute top-24"} />
       <div className="mt-24 gap-x-6 gap-y-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {places?.length > 0 &&
           places.map((place) => (

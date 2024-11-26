@@ -24,7 +24,7 @@ function PlacesPage() {
 
   return (
     <div className="mt-8 bg-gray-100 -mx-8 px-8 pt-8">
-      <Message className={"right-11 w-auto bg-gray-100 fixed z-10 top-24"} message={message} />
+      <Message className={"right-11  bg-gray-100 fixed z-10 top-24"} message={message} />
       <h1 className="text-3xl mb-1">{place?.title}</h1>
       <PlaceAddress>{place?.address}</PlaceAddress>
       <PlacesImages place={place} />

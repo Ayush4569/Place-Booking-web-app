@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { User } from "../models/user.js";
-
 import { generateToken } from "../services/jwt.js";
 import passport from "passport";
 import { multerPhotoUploader } from "../middlewares/multer.js";
@@ -11,7 +10,7 @@ route.post(
   "/register",
   multerPhotoUploader.single("profileImage"),
   async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password,mobileNumber,country } = req.body;
     // console.log(req.body);
     if ([name, email, password].some((field) => field.trim() == "")) {
       return res.status(400).json({ message: "All fields are required" });
@@ -46,6 +45,8 @@ route.post(
         email,
         password,
         profileImageUrl: avatarImage.url,
+        mobileNumber,
+        country
       });
 
       // Send a success response
@@ -107,18 +108,16 @@ route.get("/profile", (req, res) => {
 });
 route.post("/resetpassword", async (req, res) => {
   const { oldPassword, newPassword } = req.body;
+  console.log(req.body);
   try {
     if ([oldPassword, newPassword].some((field) => field.trim() != "" && field != null)) {
        const user = await User.findById(req?.user?.id)
-       const isPasswordCorrect = user.isPasswordCorrect(oldPassword)
+       const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
       if(!isPasswordCorrect){
         return res.status(400).json({message:"Incorrect Password"})
       }
       user.password = newPassword;
       await user.save();
-      if(!resetPassword){
-        throw Error("Failed to change password try again in some time")
-      }
       return res.status(200).json({message:"Password changed sucessfully"})
     }
     else{

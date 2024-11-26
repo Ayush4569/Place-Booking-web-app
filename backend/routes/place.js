@@ -59,7 +59,9 @@ route.post("/places", async (req, res) => {
       maxGuests,
       price,
       addedPhotos,
+      perks
     });
+    console.log("errors",errors);
     if (errors.length > 0 ) {
       await cloudinaryDelete(addedPhotos); //Clean up on validation failure
       return res.status(400).json({ errors});

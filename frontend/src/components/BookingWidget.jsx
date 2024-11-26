@@ -44,6 +44,7 @@ function BookingWidget({ place }) {
           }
         } catch (error) {
           console.error("Error during payment:", error);
+          setMessage(error.response.data.message)
         } 
   }
 

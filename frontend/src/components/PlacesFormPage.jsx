@@ -77,7 +77,7 @@ function PlacesFormPage() {
       try {
         const res = await axios.post("/locations/places", placesData);
         console.log(res);
-        if (res.statusText === "OK") {
+        if (res.statusText === "Created") {
           navigate("/account/places");
         }
       } catch (error) {
